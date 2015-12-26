@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Audiovisuel</string>
+    <string name="action_settings">Settings</string>
+    <string name="Bienvenue">Bienvenue!</string>
+    <string name="TODO">TODO</string>
+    <string name="newvideo">Nouvelle vidéo</string>
+</resources>
