@@ -49,7 +49,6 @@ public class VideoActivity  extends Activity  {
 
     private int findFrontFacingCamera() {
         int cameraId = -1;
-        // Search for the front facing camera
         int numberOfCameras = Camera.getNumberOfCameras();
         for (int i = 0; i < numberOfCameras; i++) {
             Camera.CameraInfo info = new Camera.CameraInfo();
@@ -65,10 +64,7 @@ public class VideoActivity  extends Activity  {
 
     private int findBackFacingCamera() {
         int cameraId = -1;
-        // Search for the back facing camera
-        // get the number of cameras
         int numberOfCameras = Camera.getNumberOfCameras();
-        // for every camera check
         for (int i = 0; i < numberOfCameras; i++) {
             Camera.CameraInfo info = new Camera.CameraInfo();
             Camera.getCameraInfo(i, info);
@@ -84,12 +80,11 @@ public class VideoActivity  extends Activity  {
     public void onResume() {
         super.onResume();
         if (!hasCamera(myContext)) {
-            Toast toast = Toast.makeText(myContext, "Sorry, your phone does not have a camera!", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(myContext, "Go buy a phone with a camera...!", Toast.LENGTH_LONG);
             toast.show();
             finish();
         }
         if (mCamera == null) {
-            // if the front facing camera does not exist
             if (findFrontFacingCamera() < 0) {
                 Toast.makeText(this, "No front facing camera found.", Toast.LENGTH_LONG).show();
                 switchCamera.setVisibility(View.GONE);
@@ -127,17 +122,13 @@ public class VideoActivity  extends Activity  {
     View.OnClickListener switchCameraListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // get the number of cameras
             if (!recording) {
                 int camerasNumber = Camera.getNumberOfCameras();
                 if (camerasNumber > 1) {
-                    // release the old camera instance
-                    // switch camera, from the front and the back and vice versa
-
                     releaseCamera();
                     chooseCamera();
                 } else {
-                    Toast toast = Toast.makeText(myContext, "Sorry, your phone has only one camera!", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(myContext, "Sorry, you have only one camera!", Toast.LENGTH_LONG);
                     toast.show();
                 }
             }
@@ -145,27 +136,17 @@ public class VideoActivity  extends Activity  {
     };
 
     public void chooseCamera() {
-        // if the camera preview is the front
+
         if (cameraFront) {
             int cameraId = findBackFacingCamera();
             if (cameraId >= 0) {
-                // open the backFacingCamera
-                // set a picture callback
-                // refresh the preview
-
                 mCamera = Camera.open(cameraId);
-                // mPicture = getPictureCallback();
                 mPreview.refreshCamera(mCamera);
             }
         } else {
             int cameraId = findFrontFacingCamera();
             if (cameraId >= 0) {
-                // open the backFacingCamera
-                // set a picture callback
-                // refresh the preview
-
                 mCamera = Camera.open(cameraId);
-                // mPicture = getPictureCallback();
                 mPreview.refreshCamera(mCamera);
             }
         }
@@ -174,13 +155,10 @@ public class VideoActivity  extends Activity  {
     @Override
     protected void onPause() {
         super.onPause();
-        // when on Pause, release camera in order to be used from other
-        // applications
         releaseCamera();
     }
 
     private boolean hasCamera(Context context) {
-        // check if the device has camera
         if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             return true;
         } else {
@@ -193,25 +171,20 @@ public class VideoActivity  extends Activity  {
         @Override
         public void onClick(View v) {
             if (recording) {
-                // stop recording and release camera
-                mediaRecorder.stop(); // stop the recording
-                releaseMediaRecorder(); // release the MediaRecorder object
+                mediaRecorder.stop();
+                releaseMediaRecorder();
                 Toast.makeText(VideoActivity.this, "Video captured!", Toast.LENGTH_LONG).show();
                 recording = false;
             } else {
                 if (!prepareMediaRecorder()) {
-                    Toast.makeText(VideoActivity.this, "Fail in prepareMediaRecorder()!\n - Ended -", Toast.LENGTH_LONG).show();
+                    Toast.makeText(VideoActivity.this, "Error!\n - Ended -", Toast.LENGTH_LONG).show();
                     finish();
                 }
-                // work on UiThread for better performance
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        // If there are stories, add them to the table
-
                         try {
                             mediaRecorder.start();
                         } catch (final Exception ex) {
-                            // Log.i("---","Exception in thread");
                         }
                     }
                 });
@@ -223,10 +196,10 @@ public class VideoActivity  extends Activity  {
 
     private void releaseMediaRecorder() {
         if (mediaRecorder != null) {
-            mediaRecorder.reset(); // clear recorder configuration
-            mediaRecorder.release(); // release the recorder object
+            mediaRecorder.reset();
+            mediaRecorder.release();
             mediaRecorder = null;
-            mCamera.lock(); // lock camera for later use
+            mCamera.lock();
         }
     }
 
@@ -236,14 +209,10 @@ public class VideoActivity  extends Activity  {
 
         mCamera.unlock();
         mediaRecorder.setCamera(mCamera);
-
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-
         mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_720P));
-
         mediaRecorder.setOutputFile("/sdcard/video1.mp4");
-
 
         try {
             mediaRecorder.prepare();
@@ -259,7 +228,6 @@ public class VideoActivity  extends Activity  {
     }
 
     private void releaseCamera() {
-        // stop and release camera
         if (mCamera != null) {
             mCamera.release();
             mCamera = null;

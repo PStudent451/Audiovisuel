@@ -48,7 +48,7 @@ public class PlayActivity extends Activity {
             try {
                  myVideoView.setMediaController(mediaControls);
                  myVideoView.setVideoURI(Uri.parse("/sdcard/video1.mp4"));
-                
+
             } catch (Exception e) {
                  Log.e("Error", e.getMessage());
                  e.printStackTrace();
